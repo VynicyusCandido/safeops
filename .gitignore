@@ -27,3 +27,8 @@ target/
 # Database / Secrets
 .env
 docker-data/
+
+# Project Specific
+*.pdf
+Transcricao.md
+
