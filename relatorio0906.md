@@ -159,4 +159,10 @@ Ativos de valor **ALTO** (Senhas, Segredos) possuem controles primários rigoros
 - **22/06:** Sistema E2E (Login JWT, CRUD Ocorrências, Logs).
 - **29/06:** MFA, Dashboards, Defesa Final.
 
+\newpage
+
+## 8. CONCLUSÃO
+
+A fundação técnica do SafeOps prioriza o raciocínio de segurança sobre as funcionalidades superficiais. A integração de RBAC desde a concepção do modelo de dados, o uso de criptografia moderna e a rastreabilidade via logs de auditoria formam uma base sólida para a continuidade do projeto e atendimento dos critérios de avaliação.
+
 
