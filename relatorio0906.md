@@ -150,4 +150,13 @@ A classificação segue critérios de Confidencialidade, Integridade e Disponibi
 ### 6.1 Hierarquia de Valor
 Ativos de valor **ALTO** (Senhas, Segredos) possuem controles primários rigorosos (BCrypt, Variáveis de Ambiente).
 
+\newpage
+
+## 7. PLANEJAMENTO TÉCNICO
+
+### 7.1 Cronograma de Checkpoints
+- **15/06:** Scaffolds, Entidades JPA, Login inicial, Tabela de Riscos.
+- **22/06:** Sistema E2E (Login JWT, CRUD Ocorrências, Logs).
+- **29/06:** MFA, Dashboards, Defesa Final.
+
 
