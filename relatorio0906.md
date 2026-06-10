@@ -58,3 +58,21 @@ O SafeOps é um sistema voltado para a gestão de ocorrências operacionais inte
 
 5. **Como a proteção será feita?**  
    Arquitetura multicamadas, RBAC, criptografia (trânsito/repouso) e trilhas de auditoria.
+
+\newpage
+
+## 2. JUSTIFICATIVA TÉCNICA E STACK
+
+### 2.1 Tecnologias Escolhidas
+
+| Tecnologia | Papel | Justificativa técnica |
+|---|---|---|
+| Java 21 + Spring Boot 3 | Backend | Tipagem forte e ecossistema maduro para segurança. |
+| Spring Security | Segurança | Suporte nativo a JWT, BCrypt e RBAC. |
+| PostgreSQL 16 | Banco de Dados | Transações ACID e conformidade SQL estrita. |
+| Next.js + TypeScript | Frontend | Proteção contra XSS e redução de erros de tipo. |
+| Docker | Infraestrutura | Isolamento de ambiente e reprodutibilidade. |
+
+### 2.2 Mapeamento de Riscos e Controles
+
+As escolhas técnicas foram feitas para mitigar riscos específicos, como o uso de BCrypt para hashes de senha (mitiga exposição de credenciais) e JPA com queries parametrizadas (mitiga SQL Injection).
