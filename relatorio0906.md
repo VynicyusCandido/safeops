@@ -134,3 +134,20 @@ flowchart LR
 - **RBAC:** Controle granular de acesso por perfil na camada de serviço.
 - **Auditoria:** Registro de logs de ações sensíveis sem permissão de edição/exclusão.
 
+\newpage
+
+## 6. TABELA DE ATIVOS
+
+A classificação segue critérios de Confidencialidade, Integridade e Disponibilidade.
+
+| Ativo | Tipo | Classificação | Risco Principal |
+|---|---|---|---|
+| Hashes de Senha | Dado | Restrito | Brute-force/Dicionário |
+| Chave Secreta JWT | Configuração | Restrito | Forja de tokens |
+| Registros de Ocorrência | Dado | Confidencial | Acesso indevido |
+| Logs de Auditoria | Dado | Confidencial | Apagamento de evidências |
+
+### 6.1 Hierarquia de Valor
+Ativos de valor **ALTO** (Senhas, Segredos) possuem controles primários rigorosos (BCrypt, Variáveis de Ambiente).
+
+
