@@ -93,3 +93,18 @@ Abaixo, a matriz de permissões cruzando perfis de usuário, recursos e ações 
 | Usuários | Gerenciar (CRUD) | Não | Não | Sim |
 | Logs | Visualizar Auditoria | Não | Não | Sim |
 | Dashboards | Visualizar | Não | Sim | Sim |
+
+\newpage
+
+## 4. MODELO DE DADOS
+
+### 4.1 Entidades Principais
+- **USUARIO:** Armazena atores e seus perfis (SOLICITANTE, ANALISTA, ADMINISTRADOR).
+- **OCORRENCIA:** Registro central com chave de posse (`solicitante_id`).
+- **COMENTARIO:** Interação imutável entre atores.
+- **LOG_AUDITORIA:** Trilha de auditoria imutável e restrita ao Administrador.
+
+### 4.2 Diagrama Entidade-Relacionamento (ER)
+![Diagrama ER](./diagrama-er_1.png)
+
+*O uso de UUID como Chave Primária impede a enumeração de registros via URL, aumentando a segurança contra varreduras.*
