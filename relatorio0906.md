@@ -76,3 +76,20 @@ O SafeOps é um sistema voltado para a gestão de ocorrências operacionais inte
 ### 2.2 Mapeamento de Riscos e Controles
 
 As escolhas técnicas foram feitas para mitigar riscos específicos, como o uso de BCrypt para hashes de senha (mitiga exposição de credenciais) e JPA com queries parametrizadas (mitiga SQL Injection).
+
+\newpage
+
+## 3. MATRIZ DE PERMISSÕES (RBAC)
+
+Abaixo, a matriz de permissões cruzando perfis de usuário, recursos e ações permitidas.
+
+| Recurso | Ação | SOLICITANTE | ANALISTA | ADMINISTRADOR |
+| :--- | :--- | :---: | :---: | :---: |
+| Ocorrência | Criar | Sim | Não | Sim |
+| Ocorrência | Visualizar (Própria) | Sim | Sim | Sim |
+| Ocorrência | Visualizar (Todas) | Não | Sim | Sim |
+| Ocorrência | Editar Status | Não | Sim | Sim |
+| Ocorrência | Excluir | Não | Não | Sim |
+| Usuários | Gerenciar (CRUD) | Não | Não | Sim |
+| Logs | Visualizar Auditoria | Não | Não | Sim |
+| Dashboards | Visualizar | Não | Sim | Sim |
