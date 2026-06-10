@@ -1,3 +1,23 @@
+# Consolidação do Relatório 09/06 (SafeOps) Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Consolidar todos os artefatos de documentação do projeto SafeOps em um único arquivo Markdown (`relatorio0906.md`) estruturado conforme normas ABNT.
+
+**Architecture:** O plano segue uma abordagem de montagem sequencial, onde cada seção do relatório é extraída de sua fonte original e formatada no arquivo final.
+
+**Tech Stack:** Markdown (ABNT), Mermaid (Diagramas).
+
+---
+
+### Task 1: Preparação da Capa e Sumário
+
+**Files:**
+- Create: `relatorio0906.md`
+
+- [ ] **Step 1: Criar o arquivo com a Capa**
+
+```markdown
 # CENTRO UNIVERSITÁRIO
 # CURSO DE ANÁLISE E DESENVOLVIMENTO DE SISTEMAS
 
@@ -36,7 +56,26 @@
 8. [CONCLUSÃO](#8-conclusão)
 
 \newpage
+```
 
+- [ ] **Step 2: Commit inicial**
+
+```bash
+git add relatorio0906.md
+git commit -m "docs: iniciar relatorio0906.md com capa e sumario"
+```
+
+---
+
+### Task 2: Seção 1 - Introdução e Domínio
+
+**Files:**
+- Modify: `relatorio0906.md`
+- Source: `RELATORIO_SEGURANCA_AlissonAnderle0906.md`
+
+- [ ] **Step 1: Inserir Introdução e Domínio**
+
+```markdown
 ## 1. INTRODUÇÃO E DOMÍNIO
 
 ### 1.1 Descrição do Sistema
@@ -58,9 +97,26 @@ O SafeOps é um sistema voltado para a gestão de ocorrências operacionais inte
 
 5. **Como a proteção será feita?**  
    Arquitetura multicamadas, RBAC, criptografia (trânsito/repouso) e trilhas de auditoria.
+```
 
-\newpage
+- [ ] **Step 2: Commit**
 
+```bash
+git add relatorio0906.md
+git commit -m "docs: adicionar introducao e dominio ao relatorio"
+```
+
+---
+
+### Task 3: Seção 2 - Justificativa Técnica e Stack
+
+**Files:**
+- Modify: `relatorio0906.md`
+- Source: `docs/stack.md`
+
+- [ ] **Step 1: Inserir Stack e Justificativas**
+
+```markdown
 ## 2. JUSTIFICATIVA TÉCNICA E STACK
 
 ### 2.1 Tecnologias Escolhidas
@@ -76,9 +132,26 @@ O SafeOps é um sistema voltado para a gestão de ocorrências operacionais inte
 ### 2.2 Mapeamento de Riscos e Controles
 
 As escolhas técnicas foram feitas para mitigar riscos específicos, como o uso de BCrypt para hashes de senha (mitiga exposição de credenciais) e JPA com queries parametrizadas (mitiga SQL Injection).
+```
 
-\newpage
+- [ ] **Step 2: Commit**
 
+```bash
+git add relatorio0906.md
+git commit -m "docs: adicionar stack e justificativas ao relatorio"
+```
+
+---
+
+### Task 4: Seção 3 - Matriz de Permissões (RBAC)
+
+**Files:**
+- Modify: `relatorio0906.md`
+- Source: `RELATORIO_SEGURANCA_AlissonAnderle0906.md`
+
+- [ ] **Step 1: Inserir Matriz RBAC**
+
+```markdown
 ## 3. MATRIZ DE PERMISSÕES (RBAC)
 
 Abaixo, a matriz de permissões cruzando perfis de usuário, recursos e ações permitidas.
@@ -93,9 +166,26 @@ Abaixo, a matriz de permissões cruzando perfis de usuário, recursos e ações 
 | Usuários | Gerenciar (CRUD) | Não | Não | Sim |
 | Logs | Visualizar Auditoria | Não | Não | Sim |
 | Dashboards | Visualizar | Não | Sim | Sim |
+```
 
-\newpage
+- [ ] **Step 2: Commit**
 
+```bash
+git add relatorio0906.md
+git commit -m "docs: adicionar matriz RBAC ao relatorio"
+```
+
+---
+
+### Task 5: Seção 4 - Modelo de Dados e ER
+
+**Files:**
+- Modify: `relatorio0906.md`
+- Source: `modelo-dados.md`, `diagrama-er_1.png`
+
+- [ ] **Step 1: Inserir Modelo de Dados**
+
+```markdown
 ## 4. MODELO DE DADOS
 
 ### 4.1 Entidades Principais
@@ -108,9 +198,26 @@ Abaixo, a matriz de permissões cruzando perfis de usuário, recursos e ações 
 ![Diagrama ER](./diagrama-er_1.png)
 
 *O uso de UUID como Chave Primária impede a enumeração de registros via URL, aumentando a segurança contra varreduras.*
+```
 
-\newpage
+- [ ] **Step 2: Commit**
 
+```bash
+git add relatorio0906.md
+git commit -m "docs: adicionar modelo de dados e diagrama ER ao relatorio"
+```
+
+---
+
+### Task 6: Seção 5 - Arquitetura do Sistema
+
+**Files:**
+- Modify: `relatorio0906.md`
+- Source: `docs/arquitetura.md`
+
+- [ ] **Step 1: Inserir Arquitetura**
+
+```markdown
 ## 5. ARQUITETURA DO SISTEMA
 
 ### 5.1 Fluxo de Dados
@@ -133,9 +240,26 @@ flowchart LR
 - **JWT em Cookie HttpOnly:** Proteção contra roubo de tokens via XSS.
 - **RBAC:** Controle granular de acesso por perfil na camada de serviço.
 - **Auditoria:** Registro de logs de ações sensíveis sem permissão de edição/exclusão.
+```
 
-\newpage
+- [ ] **Step 2: Commit**
 
+```bash
+git add relatorio0906.md
+git commit -m "docs: adicionar arquitetura ao relatorio"
+```
+
+---
+
+### Task 7: Seção 6 - Tabela de Ativos
+
+**Files:**
+- Modify: `relatorio0906.md`
+- Source: `ativos.md`
+
+- [ ] **Step 1: Inserir Tabela de Ativos**
+
+```markdown
 ## 6. TABELA DE ATIVOS
 
 A classificação segue critérios de Confidencialidade, Integridade e Disponibilidade.
@@ -149,20 +273,63 @@ A classificação segue critérios de Confidencialidade, Integridade e Disponibi
 
 ### 6.1 Hierarquia de Valor
 Ativos de valor **ALTO** (Senhas, Segredos) possuem controles primários rigorosos (BCrypt, Variáveis de Ambiente).
+```
 
-\newpage
+- [ ] **Step 2: Commit**
 
+```bash
+git add relatorio0906.md
+git commit -m "docs: adicionar tabela de ativos ao relatorio"
+```
+
+---
+
+### Task 8: Seção 7 - Planejamento Técnico
+
+**Files:**
+- Modify: `relatorio0906.md`
+- Source: `docs/planejamento-tecnico.md`
+
+- [ ] **Step 1: Inserir Planejamento**
+
+```markdown
 ## 7. PLANEJAMENTO TÉCNICO
 
 ### 7.1 Cronograma de Checkpoints
 - **15/06:** Scaffolds, Entidades JPA, Login inicial, Tabela de Riscos.
 - **22/06:** Sistema E2E (Login JWT, CRUD Ocorrências, Logs).
 - **29/06:** MFA, Dashboards, Defesa Final.
+```
 
-\newpage
+- [ ] **Step 2: Commit**
 
+```bash
+git add relatorio0906.md
+git commit -m "docs: adicionar planejamento tecnico ao relatorio"
+```
+
+---
+
+### Task 9: Seção 8 - Conclusão e Revisão Final
+
+**Files:**
+- Modify: `relatorio0906.md`
+
+- [ ] **Step 1: Inserir Conclusão**
+
+```markdown
 ## 8. CONCLUSÃO
 
 A fundação técnica do SafeOps prioriza o raciocínio de segurança sobre as funcionalidades superficiais. A integração de RBAC desde a concepção do modelo de dados, o uso de criptografia moderna e a rastreabilidade via logs de auditoria formam uma base sólida para a continuidade do projeto e atendimento dos critérios de avaliação.
+```
 
+- [ ] **Step 2: Revisão Final**
 
+Verificar links do sumário, formatação de tabelas e referências a imagens.
+
+- [ ] **Step 3: Commit Final**
+
+```bash
+git add relatorio0906.md
+git commit -m "docs: finalizar relatorio0906.md"
+```
