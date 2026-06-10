@@ -149,4 +149,4 @@ inserção. O acesso de leitura é exclusivo do ADMINISTRADOR.
 
 ---
 
-*Ver diagrama ER em `docs/diagrama-er.png`.*
+*Ver diagrama ER em [`diagrama-er.png`](diagrama-er.png).*
