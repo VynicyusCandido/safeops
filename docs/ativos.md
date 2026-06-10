@@ -27,7 +27,7 @@
 | 2 | Chave secreta JWT              | Configuração    | **Restrito**     | Variável de ambiente `JWT_SECRET`            | Permite forjar tokens válidos para qualquer usuário     | Alto    |
 | 3 | Credenciais do banco de dados  | Configuração    | **Restrito**     | Variável de ambiente `DB_PASSWORD` e afins   | Acesso direto ao banco sem passar pela aplicação        | Alto    |
 | 4 | Arquivo `.env`                 | Configuração    | **Restrito**     | Servidor de aplicação — fora do repositório  | Exposição simultânea de todos os segredos de produção   | Alto    |
-| 5 | Tokens JWT em trânsito         | Dado            | **Restrito**     | Header `Authorization` das requisições HTTP  | Sequestro de sessão sem necessidade de senha            | Alto    |
+| 5 | JWT em cookie                  | Dado            | **Restrito**     | Navegador (Cookie)                           | Sequestro de sessão sem necessidade de senha            | Alto    |
 | 6 | E-mails dos usuários           | Dado            | **Confidencial** | Tabela `usuario`, coluna `email`             | Exposição de dado pessoal identificável (LGPD art. 5º)  | Alto    |
 | 7 | Nomes dos usuários             | Dado            | **Confidencial** | Tabela `usuario`, coluna `nome`              | Dado pessoal identificável (LGPD)                       | Médio   |
 | 8 | Descrições de ocorrências      | Dado            | **Confidencial** | Tabela `ocorrencia`, coluna `descricao`      | Acesso indevido a informações operacionais internas     | Médio   |
@@ -49,7 +49,7 @@ ALTO — comprometimento causa impacto imediato e sistêmico
 ├── Chave secreta JWT             → variável de ambiente; rotação em incidente
 ├── Credenciais do banco          → variável de ambiente; rede Docker fechada
 ├── Arquivo .env                  → .gitignore obrigatório; .env.example no repo
-├── Tokens JWT em trânsito        → HTTPS obrigatório; expiração curta
+├── JWT em cookie                 → HTTPS obrigatório; expiração curta
 ├── E-mails dos usuários          → excluídos de DTOs de resposta pública
 └── Banco de dados (acesso direto)→ exposto apenas na rede interna Docker
 
@@ -76,7 +76,7 @@ BAIXO — impacto limitado isoladamente
 | Chave secreta JWT             | Variável de ambiente; revogação exige reinicialização da aplicação |
 | Credenciais do banco          | Variável de ambiente; banco exposto apenas na rede Docker interna |
 | Arquivo `.env`                | `.gitignore` configurado; `.env.example` sem valores reais no repo |
-| Tokens JWT em trânsito        | TLS obrigatório; expiração configurável (padrão: 1h)             |
+| JWT em cookie                 | TLS obrigatório; expiração configurável (padrão: 30 min)         |
 | E-mails e nomes de usuários   | DTOs excluem campos sensíveis; acesso restrito por perfil        |
 | Descrições e comentários      | Autorização por dono do recurso verificada no back-end           |
 | Logs de auditoria             | Sem endpoint de edição ou exclusão; leitura restrita ao ADMINISTRADOR |
