@@ -23,4 +23,10 @@ class HealthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("UP"));
     }
+
+    @Test
+    void rotaNaoMapeadaRetorna401() throws Exception {
+        mockMvc.perform(get("/api/qualquer-coisa"))
+                .andExpect(status().isUnauthorized());
+    }
 }
