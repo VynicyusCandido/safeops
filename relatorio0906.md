@@ -108,3 +108,29 @@ Abaixo, a matriz de permissões cruzando perfis de usuário, recursos e ações 
 ![Diagrama ER](./diagrama-er_1.png)
 
 *O uso de UUID como Chave Primária impede a enumeração de registros via URL, aumentando a segurança contra varreduras.*
+
+\newpage
+
+## 5. ARQUITETURA DO SISTEMA
+
+### 5.1 Fluxo de Dados
+```mermaid
+flowchart LR
+    subgraph CLIENTE["Cliente (Next.js)"]
+        SPA["SPA"]
+    end
+    subgraph API["Backend (Spring Boot)"]
+        SEC["Security Filter (JWT)"]
+        SVC["Service (Regras de Negócio)"]
+    end
+    subgraph DB["Banco (PostgreSQL)"]
+        TAB[("Dados")]
+    end
+    SPA --> SEC --> SVC --> TAB
+```
+
+### 5.2 Controles de Segurança Incorporados
+- **JWT em Cookie HttpOnly:** Proteção contra roubo de tokens via XSS.
+- **RBAC:** Controle granular de acesso por perfil na camada de serviço.
+- **Auditoria:** Registro de logs de ações sensíveis sem permissão de edição/exclusão.
+
