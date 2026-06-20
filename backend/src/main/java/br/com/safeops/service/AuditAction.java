@@ -1,0 +1,14 @@
+package br.com.safeops.service;
+
+public enum AuditAction {
+    LOGIN,
+    LOGIN_FALHO,
+    CRIAR_OCORRENCIA,
+    ALTERAR_STATUS,
+    ADICIONAR_COMENTARIO,
+    ATRIBUIR_ANALISTA,
+    CRIAR_USUARIO,
+    EDITAR_USUARIO,
+    ACESSO_NEGADO,
+    VISUALIZAR_LOGS
+}
