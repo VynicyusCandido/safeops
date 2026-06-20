@@ -69,8 +69,18 @@ public class AuthController {
             @RequestBody @Valid ChangePasswordRequest request,
             HttpServletRequest httpRequest,
             HttpServletResponse response) {
-        String token = authService.changePassword(
-            usuario, request.senhaAtual(), request.novaSenha(), httpRequest);
+        String token;
+        if (usuario != null) {
+            token = authService.changePassword(
+                usuario, request.senhaAtual(), request.novaSenha(), httpRequest);
+        } else {
+            if (request.email() == null || request.email().isBlank()) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Email obrigatório para troca de senha sem autenticação"));
+            }
+            token = authService.changePasswordForcado(
+                request.email(), request.senhaAtual(), request.novaSenha(), httpRequest);
+        }
         addSessionCookie(response, token);
         return ResponseEntity.ok(Map.of("message", "Senha alterada com sucesso"));
     }

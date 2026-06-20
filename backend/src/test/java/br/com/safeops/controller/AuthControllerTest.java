@@ -84,6 +84,42 @@ class AuthControllerTest {
     }
 
     @Test
+    void changePassword_semAutenticacao_retorna200_quandoTrocarSenhaFlagAtiva() throws Exception {
+        usuarioRepository.findByEmail("user@safeops.com").ifPresent(u -> {
+            u.setTrocarSenhaNoProximoLogin(true);
+            usuarioRepository.save(u);
+        });
+
+        mockMvc.perform(post("/api/auth/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"email":"user@safeops.com","senhaAtual":"Senha@123","novaSenha":"NovaSenha@456"}
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(cookie().exists("session-token"));
+    }
+
+    @Test
+    void changePassword_semAutenticacao_retorna401_quandoFlagInativa() throws Exception {
+        mockMvc.perform(post("/api/auth/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"email":"user@safeops.com","senhaAtual":"Senha@123","novaSenha":"NovaSenha@456"}
+                    """))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void changePassword_semAutenticacao_semEmail_retorna400() throws Exception {
+        mockMvc.perform(post("/api/auth/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"senhaAtual":"Senha@123","novaSenha":"NovaSenha@456"}
+                    """))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void logout_expira_cookie() throws Exception {
         mockMvc.perform(post("/api/auth/logout"))
             .andExpect(status().isNoContent())
