@@ -105,7 +105,23 @@ mvnw.cmd spring-boot:run
 
 > O backend lê as configurações do ambiente. No Windows, defina as variáveis do `.env` manualmente ou use um terminal WSL/Git Bash com o comando acima.
 
-Na primeira subida, o sistema cria automaticamente o usuário administrador com as credenciais definidas em `ADMIN_EMAIL` e `ADMIN_SENHA`. **A troca de senha é obrigatória no primeiro login.**
+Na primeira subida, o sistema cria automaticamente o usuário administrador com as credenciais definidas em `ADMIN_EMAIL` e `ADMIN_SENHA`. **A troca de senha é obrigatória antes do primeiro acesso.**
+
+#### Primeiro acesso: troca de senha obrigatória
+
+Como o administrador inicial não possui sessão ativa, a troca de senha usa um fluxo sem autenticação:
+
+```bash
+curl -X POST http://localhost:8080/api/auth/change-password \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@safeops.com",
+    "senhaAtual": "Admin@1234",
+    "novaSenha": "SuaNovaSenha@123"
+  }'
+```
+
+A resposta inclui o cookie `session-token` — o administrador já fica autenticado após a troca. Para logins subsequentes, use `POST /api/auth/login` normalmente (sem o campo `email` no body).
 
 **5. Rodar o frontend**
 
