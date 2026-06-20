@@ -24,10 +24,17 @@ Sistema web para registro, controle e monitoramento de ocorrências operacionais
 - **ANALISTA:** Analisa e altera status de ocorrências.
 - **ADMINISTRADOR:** Gerencia usuários e audita logs do sistema.
 
-## 5. Funcionalidades Planejadas
-- Autenticação JWT e Hash de senhas (BCrypt).
+## 5. Funcionalidades
+
+**Implementadas:**
+- Autenticação JWT via cookie `session-token` (httpOnly, SameSite=Strict, HS256).
+- Hash de senhas com BCrypt.
+- Logs de Auditoria com 10 eventos rastreados (`AuditAction`).
+- Controle de acesso por perfil (`@PreAuthorize`) com `SOLICITANTE`, `ANALISTA`, `ADMINISTRADOR`.
+- Administrador inicial criado automaticamente na subida da aplicação (troca de senha obrigatória).
+
+**Em desenvolvimento:**
 - CRUD de Ocorrências com controle de dono do recurso.
-- Logs de Auditoria para ações sensíveis.
 - Dashboard Administrativo.
 
 ---
@@ -61,12 +68,17 @@ Abra o arquivo `.env` e preencha os valores:
 DB_URL=jdbc:postgresql://localhost:5432/safeops
 DB_USERNAME=safeops
 DB_PASSWORD=sua_senha
-JWT_SECRET=sua_chave_secreta_com_minimo_32_caracteres
-JWT_EXPIRATION=3600000
+
+JWT_SECRET=          # gere com: openssl rand -base64 32
+COOKIE_SECURE=false  # false em dev local (sem HTTPS)
+
+ADMIN_EMAIL=admin@safeops.com
+ADMIN_SENHA=Admin@1234
+
 SERVER_PORT=8080
 ```
 
-> **Atenção:** `JWT_SECRET` deve ter **no mínimo 32 caracteres**.
+> **Atenção:** `JWT_SECRET` deve ser uma string **base64 válida** que decodifica para no mínimo 32 bytes. Gere com `openssl rand -base64 32`.
 
 **3. Subir o banco de dados**
 
@@ -80,6 +92,7 @@ Isso inicializa o container `safeops-db` com PostgreSQL 16 na porta 5432.
 
 ```bash
 cd backend
+set -a && source ../.env && set +a
 ./mvnw spring-boot:run
 ```
 
@@ -89,6 +102,10 @@ No Windows:
 cd backend
 mvnw.cmd spring-boot:run
 ```
+
+> O backend lê as configurações do ambiente. No Windows, defina as variáveis do `.env` manualmente ou use um terminal WSL/Git Bash com o comando acima.
+
+Na primeira subida, o sistema cria automaticamente o usuário administrador com as credenciais definidas em `ADMIN_EMAIL` e `ADMIN_SENHA`. **A troca de senha é obrigatória no primeiro login.**
 
 **5. Rodar o frontend**
 
