@@ -62,6 +62,14 @@ public class AuthService {
         return emitirToken(usuario);
     }
 
+    public String changePasswordForcado(String email, String senhaAtual,
+                                        String novaSenha, HttpServletRequest request) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+            .filter(Usuario::isTrocarSenhaNoProximoLogin)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        return changePassword(usuario, senhaAtual, novaSenha, request);
+    }
+
     public String changePassword(Usuario usuario, String senhaAtual,
                                   String novaSenha, HttpServletRequest request) {
         if (!passwordEncoder.matches(senhaAtual, usuario.getSenhaHash())) {
