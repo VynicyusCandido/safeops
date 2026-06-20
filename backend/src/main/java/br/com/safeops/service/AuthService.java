@@ -83,7 +83,7 @@ public class AuthService {
         return emitirToken(usuario);
     }
 
-    public String emitirToken(Usuario usuario) {
+    private String emitirToken(Usuario usuario) {
         Instant agora = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .subject(usuario.getId().toString())
