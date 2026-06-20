@@ -7,3 +7,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+    open-in-view: false
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+
+security:
+  jwt:
+    secret: dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RzLTMyY2hhcnM=
+    expiration-minutes: 120
+
+admin:
+  email: admin@test.com
+  senha: Test@1234
