@@ -70,7 +70,7 @@ auditService.log(AuditAction.LOGIN_FALHO, "tentativa com email: x@y.com", reques
 
 ---
 
-## João Angelico — Domínio de Ocorrências
+## João Angelico — Domínio de Ocorrências — CONCLUÍDO
 
 ### Visão geral
 
