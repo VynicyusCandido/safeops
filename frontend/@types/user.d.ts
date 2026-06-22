@@ -6,9 +6,15 @@ export interface User {
   nome: string;
   email: string;
   perfil: UserRole;
+  ativo: boolean;
+  criadoEm: string;
 }
 
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean;
+  login: (email: string, senha: string) => Promise<void>;
+  logout: () => Promise<void>;
+  fetchMe: () => Promise<void>;
 }
