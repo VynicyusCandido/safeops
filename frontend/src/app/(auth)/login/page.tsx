@@ -71,7 +71,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await authService.changePassword(senha, novaSenha);
+      await authService.changePassword(senha, novaSenha, email);
       // Após troca de senha, o cookie já é enviado — buscar dados do usuário
       await login(email, novaSenha);
       router.push("/dashboard");

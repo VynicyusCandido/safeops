@@ -33,8 +33,7 @@ public class LogAuditoria {
     @Column(name = "ip_origem", length = 45)
     private String ipOrigem;
 
-    @Column(name = "criado_em", updatable = false, insertable = false,
-            columnDefinition = "TIMESTAMP DEFAULT NOW()")
+    @Column(name = "criado_em", updatable = false, insertable = false)
     private Instant criadoEm;
 
     // Getters e Setters

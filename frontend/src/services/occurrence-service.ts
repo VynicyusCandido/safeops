@@ -1,5 +1,5 @@
 import { api } from '@/lib/api-client';
-import type { Ocorrencia, Comentario } from '../../@types/occurrence';
+import type { Ocorrencia, Comentario, OccurrenceStatus } from '../../@types/occurrence';
 
 export const occurrenceService = {
   getOcorrencias: async (): Promise<Ocorrencia[]> => {
@@ -14,6 +14,14 @@ export const occurrenceService = {
     });
   },
 
+  updateStatus: async (ocorrenciaId: string, status: OccurrenceStatus): Promise<Ocorrencia> => {
+    return await api.patch<Ocorrencia>(`/api/ocorrencias/${ocorrenciaId}/status`, { status });
+  },
+
+  atribuirAnalista: async (ocorrenciaId: string, analistaId: string): Promise<Ocorrencia> => {
+    return await api.patch<Ocorrencia>(`/api/ocorrencias/${ocorrenciaId}/analista`, { analistaId });
+  },
+
   getComentarios: async (ocorrenciaId: string): Promise<Comentario[]> => {
     return await api.get<Comentario[]>(`/api/ocorrencias/${ocorrenciaId}/comentarios`);
   },
@@ -22,3 +30,4 @@ export const occurrenceService = {
     await api.post(`/api/ocorrencias/${ocorrenciaId}/comentarios`, { conteudo });
   }
 };
+

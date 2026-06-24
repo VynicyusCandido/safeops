@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/db.changelog_00_create_table_usuario.sql
+  - include:
+      file: db/changelog/changes/db.changelog_01_create_table_ocorrencia.sql
+  - include:
+      file: db/changelog/changes/db.changelog_02_create_table_comentario.sql
+  - include:
+      file: db/changelog/changes/db.changelog_03_create_table_log_auditoria.sql
+  - include:
+      file: db/changelog/changes/db.changelog_04_insert_default_usuario.sql

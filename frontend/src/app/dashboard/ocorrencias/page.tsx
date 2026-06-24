@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { occurrenceService } from "@/services/occurrence-service";
-import type { Ocorrencia, Comentario } from "../../../../@types/occurrence";
+import type { Ocorrencia, Comentario, OccurrenceStatus } from "../../../../@types/occurrence";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -105,6 +105,7 @@ export default function OcorrenciasPage() {
   const [loadingComentarios, setLoadingComentarios] = useState(false);
   const [novoComentario, setNovoComentario] = useState("");
   const [sendingComment, setSendingComment] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   const fetchOcorrencias = useCallback(async () => {
     try {
@@ -180,9 +181,23 @@ export default function OcorrenciasPage() {
     }
   }
 
+  async function handleUpdateStatus(ocorrenciaId: string, newStatus: OccurrenceStatus) {
+    setUpdatingStatus(true);
+    try {
+      await occurrenceService.updateStatus(ocorrenciaId, newStatus);
+      fetchOcorrencias();
+    } catch {
+      setError("Erro ao atualizar status.");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  }
+
   const selected = ocorrencias.find((o) => o.id === selectedId);
   const canCreate =
     user?.perfil === "SOLICITANTE" || user?.perfil === "ADMINISTRADOR";
+  const canChangeStatus =
+    user?.perfil === "ANALISTA" || user?.perfil === "ADMINISTRADOR";
 
   return (
     <div className="space-y-6">
@@ -390,6 +405,33 @@ export default function OcorrenciasPage() {
                       className="mt-4 pt-4 border-t border-slate-100 space-y-4"
                       onClick={(e) => e.stopPropagation()}
                     >
+                      {/* Alterar status — analista / admin */}
+                      {canChangeStatus && (
+                        <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200/60">
+                          <label className="text-sm font-semibold text-slate-700 whitespace-nowrap">
+                            Alterar Status:
+                          </label>
+                          <div className="relative flex-1">
+                            <select
+                              value={oc.status}
+                              onChange={(e) =>
+                                handleUpdateStatus(oc.id, e.target.value as OccurrenceStatus)
+                              }
+                              disabled={updatingStatus}
+                              className="w-full h-9 rounded-md border border-input bg-white px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 appearance-none cursor-pointer disabled:opacity-50"
+                            >
+                              <option value="ABERTA">Aberta</option>
+                              <option value="EM_ANALISE">Em Análise</option>
+                              <option value="RESOLVIDA">Resolvida</option>
+                              <option value="ENCERRADA">Encerrada</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                          </div>
+                          {updatingStatus && (
+                            <Loader2 className="h-4 w-4 animate-spin text-slate-400 shrink-0" />
+                          )}
+                        </div>
+                      )}
                       {/* Comentários */}
                       <div>
                         <h4 className="text-sm font-semibold text-slate-700 flex items-center gap-1.5 mb-3">
