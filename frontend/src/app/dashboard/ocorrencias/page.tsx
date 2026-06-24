@@ -200,6 +200,7 @@ export default function OcorrenciasPage() {
         {canCreate && (
           <Button
             onClick={() => setShowForm(!showForm)}
+            variant={showForm ? "outline" : "default"}
             className="shadow-sm h-10 px-4 text-sm font-semibold"
           >
             {showForm ? (
