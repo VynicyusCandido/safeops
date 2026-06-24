@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: safeops-backend
@@ -7,7 +8,8 @@ spring:
     password: ${DB_PASSWORD:}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+    show-sql: true
     open-in-view: false
 
 server:
@@ -22,6 +24,3 @@ security:
     secret: ${JWT_SECRET}
     expiration-minutes: 120
 
-admin:
-  email: ${ADMIN_EMAIL:admin@safeops.com}
-  senha: ${ADMIN_SENHA:Admin@1234}

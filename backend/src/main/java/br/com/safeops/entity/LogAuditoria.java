@@ -34,8 +34,7 @@ public class LogAuditoria {
     @Column(name = "ip_origem", length = 45)
     private String ipOrigem;
 
-    @CreationTimestamp
-    @Column(name = "criado_em", updatable = false, nullable = false)
+    @Column(name = "criado_em", updatable = false, insertable = false)
     private Instant criadoEm;
 
     // Getters e Setters
