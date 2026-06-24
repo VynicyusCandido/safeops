@@ -32,6 +32,7 @@ done
 echo ""
 read -rp "Digite o número do backup a restaurar: " choice
 [[ "${choice}" =~ ^[0-9]+$ ]] || { echo "Entrada inválida — digite um número."; exit 1; }
+(( choice >= 1 && choice <= ${#GPG_FILES[@]} )) || { echo "Seleção fora do intervalo (1–${#GPG_FILES[@]})."; exit 1; }
 GPG_FILE="${GPG_FILES[$((choice - 1))]}"
 
 [ -z "${GPG_FILE}" ] && { echo "Seleção inválida."; exit 1; }
