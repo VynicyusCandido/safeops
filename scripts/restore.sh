@@ -31,6 +31,7 @@ done
 
 echo ""
 read -rp "Digite o número do backup a restaurar: " choice
+[[ "${choice}" =~ ^[0-9]+$ ]] || { echo "Entrada inválida — digite um número."; exit 1; }
 GPG_FILE="${GPG_FILES[$((choice - 1))]}"
 
 [ -z "${GPG_FILE}" ] && { echo "Seleção inválida."; exit 1; }
@@ -38,6 +39,7 @@ GPG_FILE="${GPG_FILES[$((choice - 1))]}"
 HASH_FILE="${GPG_FILE}.sha256"
 GZ_FILE="${GPG_FILE%.gpg}"
 DUMP_FILE="${GZ_FILE%.gz}"
+trap 'rm -f "${DUMP_FILE}"' EXIT
 
 echo ""
 echo "[1/5] Verificando integridade SHA-256..."
@@ -73,7 +75,7 @@ PGPASSWORD="${DB_PASSWORD}" docker exec -i "${CONTAINER}" \
 echo "[5/5] Validando registros restaurados..."
 count_table() {
   PGPASSWORD="${DB_PASSWORD}" docker exec "${CONTAINER}" \
-    psql -U "${DB_USERNAME}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM $1;"
+    psql -U "${DB_USERNAME}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM \"$1\";"
 }
 
 USERS=$(count_table usuario)
