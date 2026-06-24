@@ -2,6 +2,7 @@ package br.com.safeops.entity;
 
 import br.com.safeops.service.AuditAction;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -33,8 +34,8 @@ public class LogAuditoria {
     @Column(name = "ip_origem", length = 45)
     private String ipOrigem;
 
-    @Column(name = "criado_em", updatable = false, insertable = false,
-            columnDefinition = "TIMESTAMP DEFAULT NOW()")
+    @CreationTimestamp
+    @Column(name = "criado_em", updatable = false, nullable = false)
     private Instant criadoEm;
 
     // Getters e Setters
