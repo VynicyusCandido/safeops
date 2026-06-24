@@ -14,7 +14,7 @@ export const authService = {
     return await api.get<User>('/api/usuarios/me');
   },
 
-  changePassword: async (senhaAtual: string, novaSenha: string): Promise<void> => {
-    await api.post('/api/auth/change-password', { senhaAtual, novaSenha });
+  changePassword: async (email: string, senhaAtual: string, novaSenha: string): Promise<void> => {
+    await api.post('/api/auth/change-password', { email, senhaAtual, novaSenha });
   }
 };
