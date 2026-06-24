@@ -2,6 +2,7 @@ package br.com.safeops.entity;
 
 import br.com.safeops.service.AuditAction;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;

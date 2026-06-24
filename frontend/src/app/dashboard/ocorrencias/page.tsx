@@ -292,6 +292,7 @@ export default function OcorrenciasPage() {
                   variant="ghost"
                   onClick={() => setShowForm(false)}
                   disabled={submitting}
+                  className="h-9 px-4"
                 >
                   Cancelar
                 </Button>
