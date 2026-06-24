@@ -219,7 +219,7 @@ export default function OcorrenciasPage() {
 
       {/* Create form */}
       {showForm && (
-        <Card className="border-primary/20 shadow-md animate-in slide-in-from-top-2 duration-300">
+        <Card className="border border-border shadow-sm animate-in slide-in-from-top-2 duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Registrar Nova Ocorrência</CardTitle>
           </CardHeader>
