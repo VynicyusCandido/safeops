@@ -200,7 +200,6 @@ export default function OcorrenciasPage() {
         {canCreate && (
           <Button
             onClick={() => setShowForm(!showForm)}
-            variant={showForm ? "outline" : "default"}
             className="shadow-sm h-10 px-4 text-sm font-semibold"
           >
             {showForm ? (
@@ -220,7 +219,7 @@ export default function OcorrenciasPage() {
 
       {/* Create form */}
       {showForm && (
-        <Card className="border border-border shadow-sm animate-in slide-in-from-top-2 duration-300">
+        <Card className="border-primary/20 shadow-md animate-in slide-in-from-top-2 duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Registrar Nova Ocorrência</CardTitle>
           </CardHeader>
@@ -247,7 +246,7 @@ export default function OcorrenciasPage() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Detalhes adicionais sobre a ocorrência..."
-                  className="w-full min-h-[100px] rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/25 resize-y"
+                  className="w-full min-h-[100px] rounded-md border border-input bg-input/20 px-3 py-2 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 resize-y"
                   disabled={submitting}
                 />
               </div>
@@ -261,7 +260,7 @@ export default function OcorrenciasPage() {
                     onChange={(e) =>
                       setPrioridade(e.target.value as Ocorrencia["prioridade"])
                     }
-                    className="w-full h-9 rounded-md border border-input bg-white px-3 text-sm shadow-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/25 appearance-none cursor-pointer transition-colors"
+                    className="w-full h-10 rounded-md border border-input bg-input/20 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 appearance-none cursor-pointer"
                     disabled={submitting}
                   >
                     <option value="BAIXA">Baixa</option>

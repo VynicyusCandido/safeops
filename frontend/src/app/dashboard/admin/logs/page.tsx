@@ -140,7 +140,7 @@ export default function AdminLogsPage() {
                 <select
                   value={acao}
                   onChange={(e) => setAcao(e.target.value)}
-                  className="w-full h-9 rounded-md border border-input bg-white px-3 text-sm shadow-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/25 appearance-none cursor-pointer transition-colors"
+                  className="w-full h-10 rounded-md border border-input bg-input/20 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 appearance-none cursor-pointer"
                 >
                   {acaoOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>
