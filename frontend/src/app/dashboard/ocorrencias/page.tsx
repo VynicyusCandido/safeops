@@ -22,9 +22,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-/* ------------------------------------------------------------------ */
-/* Visual helpers                                                      */
-/* ------------------------------------------------------------------ */
+// -Visual helpers
 
 const statusConfig: Record<
   Ocorrencia["status"],
@@ -81,9 +79,7 @@ function formatDate(iso: string) {
   });
 }
 
-/* ------------------------------------------------------------------ */
-/* Page                                                                */
-/* ------------------------------------------------------------------ */
+// -Page
 
 export default function OcorrenciasPage() {
   const { user } = useAuthStore();
