@@ -31,10 +31,10 @@ Sistema web para registro, controle e monitoramento de ocorrências operacionais
 - Hash de senhas com BCrypt.
 - Logs de Auditoria com 10 eventos rastreados (`AuditAction`).
 - Controle de acesso por perfil (`@PreAuthorize`) com `SOLICITANTE`, `ANALISTA`, `ADMINISTRADOR`.
-- Administrador inicial criado automaticamente na subida da aplicação (troca de senha obrigatória).
+- CRUD de Ocorrências com controle de dono do recurso (ocorrências são imutáveis — sem exclusão).
+- Usuários de teste criados automaticamente via Liquibase (troca de senha obrigatória no primeiro acesso).
 
 **Em desenvolvimento:**
-- CRUD de Ocorrências com controle de dono do recurso.
 - Dashboard Administrativo.
 
 ---
@@ -66,14 +66,11 @@ Abra o arquivo `.env` e preencha os valores:
 
 ```
 DB_URL=jdbc:postgresql://localhost:5432/safeops
-DB_USERNAME=safeops
+DB_USERNAME=admin
 DB_PASSWORD=sua_senha
 
 JWT_SECRET=          # gere com: openssl rand -base64 32
 COOKIE_SECURE=false  # false em dev local (sem HTTPS)
-
-ADMIN_EMAIL=admin@safeops.com
-ADMIN_SENHA=Admin@1234
 
 SERVER_PORT=8080
 ```
