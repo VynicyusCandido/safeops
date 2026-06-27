@@ -16,7 +16,7 @@ import { ShieldCheck, AlertCircle, KeyRound, Loader2, Eye, EyeOff } from "lucide
 import { useAuthStore } from "@/store/auth-store";
 import { authService } from "@/services/auth-service";
 
-type LoginStep = "credentials" | "change-password";
+type LoginStep = "credentials" | "change-password" | "mfa";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,6 +31,32 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [mfaCode, setMfaCode] = useState("");
+
+  async function handleMfa(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (mfaCode.length !== 6) {
+      setError("O código deve ter 6 dígitos.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await login(email, senha, mfaCode);
+      router.push("/dashboard");
+    } catch (err: unknown) {
+      const error = err as { status?: number };
+      if (error.status === 401) {
+        setError("Código inválido.");
+      } else {
+        setError("Erro ao validar código. Tente novamente.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +70,8 @@ export default function LoginPage() {
       const error = err as { status?: number; body?: { reason?: string } };
       if (error.status === 403 && error.body?.reason === "PASSWORD_CHANGE_REQUIRED") {
         setStep("change-password");
+      } else if (error.status === 403 && error.body?.reason === "MFA_REQUIRED") {
+        setStep("mfa");
       } else if (error.status === 401) {
         setError("E-mail ou senha inválidos.");
       } else {
@@ -72,12 +100,16 @@ export default function LoginPage() {
 
     try {
       await authService.changePassword(senha, novaSenha, email);
-      // Após troca de senha, o cookie já é enviado — buscar dados do usuário
+      // Após troca de senha, o cookie não é mais enviado automaticamente no primeiro acesso.
+      // Tentamos fazer o login normal
       await login(email, novaSenha);
       router.push("/dashboard");
     } catch (err: unknown) {
-      const error = err as { status?: number };
-      if (error.status === 400) {
+      const error = err as { status?: number; body?: { reason?: string } };
+      if (error.status === 403 && error.body?.reason === "MFA_REQUIRED") {
+        setSenha(novaSenha); // Atualiza a senha no estado para a requisição de MFA usar a nova senha!
+        setStep("mfa");
+      } else if (error.status === 400) {
         setError("Senha atual inválida ou nova senha não atende aos requisitos.");
       } else {
         setError("Erro ao alterar a senha. Tente novamente.");
@@ -94,10 +126,14 @@ export default function LoginPage() {
           <CardHeader className="space-y-4 text-center p-8 pb-6">
             <div className="flex justify-center">
               <div className="bg-primary/10 p-4 rounded-full animate-pulse-slow">
-                {step === "credentials" ? (
+                {step === "credentials" && (
                   <ShieldCheck className="w-10 h-10 text-primary" />
-                ) : (
+                )}
+                {step === "change-password" && (
                   <KeyRound className="w-10 h-10 text-amber-600" />
+                )}
+                {step === "mfa" && (
+                  <ShieldCheck className="w-10 h-10 text-blue-600" />
                 )}
               </div>
             </div>
@@ -106,9 +142,9 @@ export default function LoginPage() {
                 SafeOps
               </CardTitle>
               <CardDescription className="text-base mt-2">
-                {step === "credentials"
-                  ? "Autentique-se para gerenciar ocorrências"
-                  : "Troca de senha obrigatória"}
+                {step === "credentials" && "Autentique-se para gerenciar ocorrências"}
+                {step === "change-password" && "Troca de senha obrigatória"}
+                {step === "mfa" && "Verificação em duas etapas"}
               </CardDescription>
             </div>
           </CardHeader>
@@ -190,7 +226,7 @@ export default function LoginPage() {
                 </Button>
               </CardFooter>
             </form>
-          ) : (
+          ) : step === "change-password" ? (
             <form onSubmit={handleChangePassword}>
               <CardContent className="space-y-5 p-8 py-2">
                 <div className="p-3 bg-amber-50 text-amber-800 rounded-lg text-sm border border-amber-200">
@@ -286,6 +322,73 @@ export default function LoginPage() {
                   disabled={loading}
                 >
                   Voltar ao login
+                </Button>
+              </CardFooter>
+            </form>
+          ) : (
+            <form onSubmit={handleMfa}>
+              <CardContent className="space-y-6 p-8 py-2">
+                <div className="p-3 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-200">
+                  <p className="font-medium">Segurança Adicional</p>
+                  <p className="mt-1 text-blue-700">
+                    Insira o código de 6 dígitos gerado pelo seu aplicativo autenticador.
+                  </p>
+                </div>
+                {error && (
+                  <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="mfaCode"
+                    className="text-sm font-semibold leading-none text-slate-700"
+                  >
+                    Código MFA
+                  </label>
+                  <Input
+                    id="mfaCode"
+                    type="text"
+                    maxLength={6}
+                    placeholder="000000"
+                    className="h-12 text-base text-center tracking-[0.5em] font-mono"
+                    value={mfaCode}
+                    onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ""))}
+                    required
+                    autoFocus
+                    disabled={loading}
+                  />
+                </div>
+              </CardContent>
+              <CardFooter className="p-8 pt-6 flex flex-col gap-3">
+                <Button
+                  type="submit"
+                  className="w-full h-12 text-base font-bold shadow-md"
+                  disabled={loading || mfaCode.length !== 6}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Verificando...
+                    </>
+                  ) : (
+                    "Validar código"
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full text-sm text-slate-500"
+                  onClick={() => {
+                    setStep("credentials");
+                    setError("");
+                    setMfaCode("");
+                    useAuthStore.getState().logout();
+                  }}
+                  disabled={loading}
+                >
+                  Cancelar e voltar
                 </Button>
               </CardFooter>
             </form>
