@@ -2,8 +2,8 @@ import { api } from '@/lib/api-client';
 import type { User } from '../../@types/user';
 
 export const authService = {
-  login: async (email: string, senha: string): Promise<void> => {
-    await api.post('/api/auth/login', { email, senha });
+  login: async (email: string, senha: string, mfaCode?: string): Promise<void> => {
+    await api.post('/api/auth/login', { email, senha, mfaCode });
   },
 
   logout: async (): Promise<void> => {

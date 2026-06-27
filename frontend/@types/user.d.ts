@@ -14,7 +14,7 @@ export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, senha: string) => Promise<void>;
+  login: (email: string, senha: string, mfaCode?: string) => Promise<void>;
   logout: () => Promise<void>;
   fetchMe: () => Promise<void>;
 }

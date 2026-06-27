@@ -7,8 +7,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   loading: true,
 
-  login: async (email, senha) => {
-    await authService.login(email, senha)
+  login: async (email, senha, mfaCode) => {
+    await authService.login(email, senha, mfaCode)
     const user = await authService.getMe()
     set({ user, isAuthenticated: true, loading: false })
   },
