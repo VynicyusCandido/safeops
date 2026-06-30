@@ -32,6 +32,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [mfaCode, setMfaCode] = useState("");
+  const [mfaQrCode, setMfaQrCode] = useState("");
 
   async function handleMfa(e: React.FormEvent) {
     e.preventDefault();
@@ -72,6 +73,9 @@ export default function LoginPage() {
         setStep("change-password");
       } else if (error.status === 403 && error.body?.reason === "MFA_REQUIRED") {
         setStep("mfa");
+      } else if (error.status === 403 && error.body?.reason === "MFA_SETUP_REQUIRED") {
+        setMfaQrCode((error.body as any).qrCode || "");
+        setStep("mfa");
       } else if (error.status === 401) {
         setError("E-mail ou senha inválidos.");
       } else {
@@ -108,6 +112,10 @@ export default function LoginPage() {
       const error = err as { status?: number; body?: { reason?: string } };
       if (error.status === 403 && error.body?.reason === "MFA_REQUIRED") {
         setSenha(novaSenha); // Atualiza a senha no estado para a requisição de MFA usar a nova senha!
+        setStep("mfa");
+      } else if (error.status === 403 && error.body?.reason === "MFA_SETUP_REQUIRED") {
+        setSenha(novaSenha);
+        setMfaQrCode((error.body as any).qrCode || "");
         setStep("mfa");
       } else if (error.status === 400) {
         setError("Senha atual inválida ou nova senha não atende aos requisitos.");
@@ -334,6 +342,14 @@ export default function LoginPage() {
                     Insira o código de 6 dígitos gerado pelo seu aplicativo autenticador.
                   </p>
                 </div>
+                {mfaQrCode && (
+                  <div className="flex flex-col items-center justify-center p-4 bg-white border border-slate-200 rounded-lg space-y-4">
+                    <p className="text-sm text-slate-600 text-center font-medium">
+                      Escaneie o QR Code abaixo no seu aplicativo autenticador (ex: Google Authenticator) para vincular sua conta.
+                    </p>
+                    <img src={mfaQrCode} alt="MFA QR Code" className="w-48 h-48 border border-slate-100 rounded-md shadow-sm" />
+                  </div>
+                )}
                 {error && (
                   <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
                     <AlertCircle className="h-4 w-4 shrink-0" />
