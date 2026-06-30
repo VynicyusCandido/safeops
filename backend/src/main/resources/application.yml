@@ -5,7 +5,7 @@ spring:
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/safeops}
     username: ${DB_USERNAME:admin}
-    password: ${DB_PASSWORD:}
+    password: ${DB_PASSWORD:secret_password}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -21,6 +21,5 @@ server:
 
 security:
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:L098+jNAes5BMF4oKLeXtpjUOcuGPQozfFDSC2Xdigk=}
     expiration-minutes: 120
-

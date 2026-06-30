@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/changes/db.changelog_03_create_table_log_auditoria.sql
   - include:
       file: db/changelog/changes/db.changelog_04_insert_default_usuario.sql
+  - include:
+      file: db/changelog/changes/db.changelog_05_add_mfa_columns.sql

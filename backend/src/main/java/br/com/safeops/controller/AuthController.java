@@ -4,6 +4,7 @@ import br.com.safeops.dto.ChangePasswordRequest;
 import br.com.safeops.dto.LoginRequest;
 import br.com.safeops.entity.Usuario;
 import br.com.safeops.exception.PasswordChangeRequiredException;
+import br.com.safeops.exception.MfaRequiredException;
 import br.com.safeops.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,12 +42,15 @@ public class AuthController {
             HttpServletRequest httpRequest,
             HttpServletResponse response) {
         try {
-            String token = authService.login(request.email(), request.senha(), httpRequest);
+            String token = authService.login(request.email(), request.senha(), request.mfaCode(), httpRequest);
             addSessionCookie(response, token);
             return ResponseEntity.ok(Map.of("message", "Login realizado com sucesso"));
         } catch (PasswordChangeRequiredException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of("reason", "PASSWORD_CHANGE_REQUIRED"));
+        } catch (MfaRequiredException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("reason", "MFA_REQUIRED"));
         }
     }
 
@@ -73,15 +77,16 @@ public class AuthController {
         if (usuario != null) {
             token = authService.changePassword(
                 usuario, request.senhaAtual(), request.novaSenha(), httpRequest);
+            addSessionCookie(response, token);
         } else {
             if (request.email() == null || request.email().isBlank()) {
                 return ResponseEntity.badRequest()
                     .body(Map.of("error", "Email obrigatório para troca de senha sem autenticação"));
             }
-            token = authService.changePasswordForcado(
+            authService.changePasswordForcado(
                 request.email(), request.senhaAtual(), request.novaSenha(), httpRequest);
+            // Não adiciona cookie no changePasswordForcado (primeiro acesso) para forçar o login completo com MFA
         }
-        addSessionCookie(response, token);
         return ResponseEntity.ok(Map.of("message", "Senha alterada com sucesso"));
     }
 
