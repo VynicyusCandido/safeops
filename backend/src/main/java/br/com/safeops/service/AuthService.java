@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 
 import br.com.safeops.exception.MfaRequiredException;
+import br.com.safeops.exception.MfaSetupRequiredException;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.code.CodeGenerator;
@@ -25,6 +26,11 @@ import dev.samstevens.totp.code.DefaultCodeGenerator;
 import dev.samstevens.totp.code.DefaultCodeVerifier;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
+import dev.samstevens.totp.qr.QrData;
+import dev.samstevens.totp.qr.QrGenerator;
+import dev.samstevens.totp.qr.ZxingPngQrGenerator;
+import dev.samstevens.totp.util.Utils;
+import dev.samstevens.totp.exceptions.QrGenerationException;
 
 @Service
 public class AuthService {
@@ -61,6 +67,25 @@ public class AuthService {
         return verifier.isValidCode(secret, code);
     }
 
+    private String generateQrCodeUri(String secret, String email) {
+        try {
+            QrData data = new QrData.Builder()
+                .label(email)
+                .secret(secret)
+                .issuer("SafeOps")
+                .algorithm(dev.samstevens.totp.code.HashingAlgorithm.SHA1)
+                .digits(6)
+                .period(30)
+                .build();
+            QrGenerator generator = new ZxingPngQrGenerator();
+            byte[] imageData = generator.generate(data);
+            String mimeType = generator.getImageMimeType();
+            return Utils.getDataUriForImage(imageData, mimeType);
+        } catch (QrGenerationException e) {
+            throw new RuntimeException("Erro ao gerar QR Code para MFA", e);
+        }
+    }
+
     public String login(String email, String senha, String mfaCode, HttpServletRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
@@ -79,7 +104,23 @@ public class AuthService {
             throw new PasswordChangeRequiredException();
         }
 
-        if (usuario.isMfaEnabled()) {
+        if (!usuario.isMfaEnabled()) {
+            if (usuario.getMfaSecret() == null) {
+                usuario.setMfaSecret(generateMfaSecret());
+                usuarioRepository.save(usuario);
+            }
+            if (mfaCode == null || mfaCode.isBlank()) {
+                String qrCodeUri = generateQrCodeUri(usuario.getMfaSecret(), usuario.getEmail());
+                throw new MfaSetupRequiredException(qrCodeUri);
+            } else {
+                if (!verifyMfaCode(usuario.getMfaSecret(), mfaCode)) {
+                    auditService.log(AuditAction.LOGIN_FALHO, "Código MFA inválido no setup para email: " + email, request);
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Código MFA inválido");
+                }
+                usuario.setMfaEnabled(true);
+                usuarioRepository.save(usuario);
+            }
+        } else {
             if (mfaCode == null || mfaCode.isBlank()) {
                 throw new MfaRequiredException();
             }

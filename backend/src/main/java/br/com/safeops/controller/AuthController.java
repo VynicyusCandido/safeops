@@ -5,6 +5,7 @@ import br.com.safeops.dto.LoginRequest;
 import br.com.safeops.entity.Usuario;
 import br.com.safeops.exception.PasswordChangeRequiredException;
 import br.com.safeops.exception.MfaRequiredException;
+import br.com.safeops.exception.MfaSetupRequiredException;
 import br.com.safeops.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,6 +52,9 @@ public class AuthController {
         } catch (MfaRequiredException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of("reason", "MFA_REQUIRED"));
+        } catch (MfaSetupRequiredException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("reason", "MFA_SETUP_REQUIRED", "qrCode", e.getQrCodeDataUri()));
         }
     }
 
