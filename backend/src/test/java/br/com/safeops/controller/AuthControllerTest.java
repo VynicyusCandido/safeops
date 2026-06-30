@@ -96,7 +96,7 @@ class AuthControllerTest {
                     {"email":"user@safeops.com","senhaAtual":"Senha@123","novaSenha":"NovaSenha@456"}
                     """))
             .andExpect(status().isOk())
-            .andExpect(cookie().exists("session-token"));
+            .andExpect(cookie().doesNotExist("session-token"));
     }
 
     @Test
