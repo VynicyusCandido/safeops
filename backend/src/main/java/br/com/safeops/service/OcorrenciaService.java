@@ -81,12 +81,6 @@ public class OcorrenciaService {
         return OcorrenciaResponse.from(ocorrencia);
     }
 
-    public void deletar(UUID id, HttpServletRequest req) {
-        Ocorrencia ocorrencia = ocorrenciaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        ocorrenciaRepository.delete(ocorrencia);
-    }
-
     private Ocorrencia buscarComVerificacao(UUID id, Usuario usuario) {
         Ocorrencia ocorrencia = ocorrenciaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
