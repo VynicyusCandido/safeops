@@ -104,29 +104,31 @@ public class AuthService {
             throw new PasswordChangeRequiredException();
         }
 
-        if (!usuario.isMfaEnabled()) {
-            if (usuario.getMfaSecret() == null) {
-                usuario.setMfaSecret(generateMfaSecret());
-                usuarioRepository.save(usuario);
-            }
-            if (mfaCode == null || mfaCode.isBlank()) {
-                String qrCodeUri = generateQrCodeUri(usuario.getMfaSecret(), usuario.getEmail());
-                throw new MfaSetupRequiredException(qrCodeUri);
+        if (usuario.getPerfil() == br.com.safeops.entity.Perfil.ADMINISTRADOR) {
+            if (!usuario.isMfaEnabled()) {
+                if (usuario.getMfaSecret() == null) {
+                    usuario.setMfaSecret(generateMfaSecret());
+                    usuarioRepository.save(usuario);
+                }
+                if (mfaCode == null || mfaCode.isBlank()) {
+                    String qrCodeUri = generateQrCodeUri(usuario.getMfaSecret(), usuario.getEmail());
+                    throw new MfaSetupRequiredException(qrCodeUri);
+                } else {
+                    if (!verifyMfaCode(usuario.getMfaSecret(), mfaCode)) {
+                        auditService.log(AuditAction.LOGIN_FALHO, "Código MFA inválido no setup para email: " + email, request);
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Código MFA inválido");
+                    }
+                    usuario.setMfaEnabled(true);
+                    usuarioRepository.save(usuario);
+                }
             } else {
+                if (mfaCode == null || mfaCode.isBlank()) {
+                    throw new MfaRequiredException();
+                }
                 if (!verifyMfaCode(usuario.getMfaSecret(), mfaCode)) {
-                    auditService.log(AuditAction.LOGIN_FALHO, "Código MFA inválido no setup para email: " + email, request);
+                    auditService.log(AuditAction.LOGIN_FALHO, "Código MFA inválido para email: " + email, request);
                     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Código MFA inválido");
                 }
-                usuario.setMfaEnabled(true);
-                usuarioRepository.save(usuario);
-            }
-        } else {
-            if (mfaCode == null || mfaCode.isBlank()) {
-                throw new MfaRequiredException();
-            }
-            if (!verifyMfaCode(usuario.getMfaSecret(), mfaCode)) {
-                auditService.log(AuditAction.LOGIN_FALHO, "Código MFA inválido para email: " + email, request);
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Código MFA inválido");
             }
         }
 
