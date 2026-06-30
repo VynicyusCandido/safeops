@@ -31,10 +31,10 @@ Sistema web para registro, controle e monitoramento de ocorrências operacionais
 - Hash de senhas com BCrypt.
 - Logs de Auditoria com 10 eventos rastreados (`AuditAction`).
 - Controle de acesso por perfil (`@PreAuthorize`) com `SOLICITANTE`, `ANALISTA`, `ADMINISTRADOR`.
-- Administrador inicial criado automaticamente na subida da aplicação (troca de senha obrigatória).
+- CRUD de Ocorrências com controle de dono do recurso (ocorrências são imutáveis — sem exclusão).
+- Usuários de teste criados automaticamente via Liquibase (troca de senha obrigatória no primeiro acesso).
 
 **Em desenvolvimento:**
-- CRUD de Ocorrências com controle de dono do recurso.
 - Dashboard Administrativo.
 
 ---
@@ -66,14 +66,11 @@ Abra o arquivo `.env` e preencha os valores:
 
 ```
 DB_URL=jdbc:postgresql://localhost:5432/safeops
-DB_USERNAME=safeops
+DB_USERNAME=admin
 DB_PASSWORD=sua_senha
 
 JWT_SECRET=          # gere com: openssl rand -base64 32
 COOKIE_SECURE=false  # false em dev local (sem HTTPS)
-
-ADMIN_EMAIL=admin@safeops.com
-ADMIN_SENHA=Admin@1234
 
 SERVER_PORT=8080
 ```
@@ -105,11 +102,19 @@ mvnw.cmd spring-boot:run
 
 > O backend lê as configurações do ambiente. No Windows, defina as variáveis do `.env` manualmente ou use um terminal WSL/Git Bash com o comando acima.
 
-Na primeira subida, o sistema cria automaticamente o usuário administrador com as credenciais definidas em `ADMIN_EMAIL` e `ADMIN_SENHA`. **A troca de senha é obrigatória antes do primeiro acesso.**
+Na primeira subida, o Liquibase cria automaticamente três usuários de teste (ver credenciais abaixo). **A troca de senha é obrigatória antes do primeiro acesso para todos eles.**
+
+#### Usuários de teste
+
+| Perfil | E-mail | Senha inicial |
+|---|---|---|
+| ADMINISTRADOR | admin@safeops.com | Admin@1234 |
+| ANALISTA | analista@safeops.com | Analista@1234 |
+| SOLICITANTE | solicitante@safeops.com | Solicitante@1234 |
 
 #### Primeiro acesso: troca de senha obrigatória
 
-Como o administrador inicial não possui sessão ativa, a troca de senha usa um fluxo sem autenticação:
+Como os usuários de teste não possuem sessão ativa, a troca de senha usa um fluxo sem autenticação. Exemplo com o administrador:
 
 ```bash
 curl -X POST http://localhost:8080/api/auth/change-password \
@@ -121,7 +126,7 @@ curl -X POST http://localhost:8080/api/auth/change-password \
   }'
 ```
 
-A resposta inclui o cookie `session-token` — o administrador já fica autenticado após a troca. Para logins subsequentes, use `POST /api/auth/login` normalmente (sem o campo `email` no body).
+A resposta inclui o cookie `session-token` — o usuário já fica autenticado após a troca. Para logins subsequentes, use `POST /api/auth/login` normalmente (sem o campo `email` no body).
 
 **5. Rodar o frontend**
 

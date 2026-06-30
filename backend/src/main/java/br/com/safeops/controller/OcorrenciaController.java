@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+
 @RestController
 @RequestMapping("/api/ocorrencias")
 public class OcorrenciaController {
@@ -64,12 +65,4 @@ public class OcorrenciaController {
         return ocorrenciaService.atribuirAnalista(id, request, usuario, req);
     }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<Void> deletar(@PathVariable UUID id,
-            @AuthenticationPrincipal Usuario usuario,
-            HttpServletRequest req) {
-        ocorrenciaService.deletar(id, req);
-        return ResponseEntity.noContent().build();
-    }
 }
