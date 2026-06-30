@@ -40,6 +40,12 @@ public class Usuario implements UserDetails {
     @Column(name = "criado_em", updatable = false)
     private Instant criadoEm;
 
+    @Column(name = "mfa_secret", length = 64)
+    private String mfaSecret;
+
+    @Column(name = "mfa_enabled", nullable = false)
+    private boolean mfaEnabled = false;
+
     @Column(name = "atualizado_em")
     private Instant atualizadoEm;
 
@@ -77,6 +83,10 @@ public class Usuario implements UserDetails {
     public void setAtivo(boolean ativo) { this.ativo = ativo; }
     public boolean isTrocarSenhaNoProximoLogin() { return trocarSenhaNoProximoLogin; }
     public void setTrocarSenhaNoProximoLogin(boolean trocar) { this.trocarSenhaNoProximoLogin = trocar; }
+    public String getMfaSecret() { return mfaSecret; }
+    public void setMfaSecret(String mfaSecret) { this.mfaSecret = mfaSecret; }
+    public boolean isMfaEnabled() { return mfaEnabled; }
+    public void setMfaEnabled(boolean mfaEnabled) { this.mfaEnabled = mfaEnabled; }
     public Instant getCriadoEm() { return criadoEm; }
     public Instant getAtualizadoEm() { return atualizadoEm; }
 }

@@ -17,6 +17,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 
+import br.com.safeops.exception.MfaRequiredException;
+import dev.samstevens.totp.secret.DefaultSecretGenerator;
+import dev.samstevens.totp.secret.SecretGenerator;
+import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
+
 @Service
 public class AuthService {
 
@@ -38,7 +47,21 @@ public class AuthService {
         this.auditService = auditService;
     }
 
-    public String login(String email, String senha, HttpServletRequest request) {
+    public String generateMfaSecret() {
+        SecretGenerator generator = new DefaultSecretGenerator();
+        return generator.generate();
+    }
+
+    public boolean verifyMfaCode(String secret, String code) {
+        TimeProvider timeProvider = new SystemTimeProvider();
+        CodeGenerator codeGenerator = new DefaultCodeGenerator();
+        DefaultCodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+        // Permite uma discrepância de janelas de tempo caso o relógio atrase um pouco
+        verifier.setAllowedTimePeriodDiscrepancy(2);
+        return verifier.isValidCode(secret, code);
+    }
+
+    public String login(String email, String senha, String mfaCode, HttpServletRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
@@ -54,6 +77,16 @@ public class AuthService {
 
         if (usuario.isTrocarSenhaNoProximoLogin()) {
             throw new PasswordChangeRequiredException();
+        }
+
+        if (usuario.isMfaEnabled()) {
+            if (mfaCode == null || mfaCode.isBlank()) {
+                throw new MfaRequiredException();
+            }
+            if (!verifyMfaCode(usuario.getMfaSecret(), mfaCode)) {
+                auditService.log(AuditAction.LOGIN_FALHO, "Código MFA inválido para email: " + email, request);
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Código MFA inválido");
+            }
         }
 
         auditService.log(AuditAction.LOGIN, usuario.getId(),

@@ -1,6 +1,7 @@
 -- liquibase formatted sql
 
 -- changeset liquibase:04_insert_default_usuario
+-- validCheckSum: 9:173f91f4a0f468890f4a8ad32b6807cf
 INSERT INTO usuario (id, nome, email, senha_hash, perfil, ativo, trocar_senha_no_proximo_login, criado_em, atualizado_em)
 VALUES
 (gen_random_uuid(), 'Administrador', 'admin@safeops.com', '$2a$10$eulZDglFlLmBOxy4sFkJuu6LYXMBH.bJQ4L./zVhcSj8Ef.bVGb8O', 'ADMINISTRADOR', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Password: Admin@1234
